@@ -1,5 +1,176 @@
 <html>
+    <head>
+        <meta charset="utf-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    </head>
     <body>
-        <h1>{{body}}</h1>
+        <!-- <h1>{{body}}</h1> -->
+
+    <div class="main_div">
+        <div>
+        <div class="form_div">
+            <form action="/action_page.php">
+
+                <label >노래 제목
+                    <input type="text" name="song-title" placeholder="노래 제목을 입력해주세요.">
+                </label>
+                <label>아티스트 명
+                <input type="text" name="artist" placeholder="아티스트명을 입력해주세요">
+                </label>
+                <label>출처
+                    <input type="text" name="literary-property" placeholder="출처링크나 저작권소유자를 입력해주세요.">
+                </label>
+                <label>썸네일
+                    <div class="box-file-input">
+                        <label>
+                            <input type="file" name="ev_display_<?php echo $k; ?>" class="file-input thumbnail-input" accept="image/*">
+                        </label>
+                        <span class="filename thumbnailname">파일을 선택해주세요.
+                    </div>
+                </label>
+
+                <label>음악
+                    <div class="box-file-input ">
+                        <label>
+                            <input type="file" name="ev_display_<?php echo $k; ?>" class="file-input music-input" accept="audio/*">
+                        </label>
+                        <span class="filename musicname">음악을 선택해주세요.
+                    </div>   
+                </label> 
+                
+                <label>항목
+                    <form>
+                        <input type="text" id="category-btn" name="category-main" readonly placeholder="항목을 선택해주세요" onclick="location.href='popup'">
+                    </form>
+                    
+                </label>
+                
+                <label>서브항목
+                    <input type="text" name="category-sub" readonly placeholder="서브 항목을 선택해주세요">
+                </label>
+
+                <label>태그
+                    <input type="text" name="tag" readonly placeholder="태그를 선택해주세요">
+                </label>
+                
+            </form>
+        </div>
+
+        <input type="submit" value="올리기">
+    </div>
+
+    </div>
+
     </body>
+
+    <style>
+        input[type=text], select {
+          width: 100%;
+          padding: 12px 20px;
+          margin: 8px 0;
+          display: inline-block;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+        }
+        
+        input[type=submit] {
+          width: 100%;
+          background-color: #4CAF50;
+          color: white;
+          padding: 14px 20px;
+          margin: 30px 0;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+        
+        input[type=submit]:hover {
+          background-color: #45a049;
+        }
+        
+        .form_div {
+          border-radius: 5px;
+          background-color: #f2f2f2;
+          margin: auto;
+          padding: 20px;
+        }
+
+        .main_div{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+       
+        .box-file-input label{
+            display:inline-block;
+            background:#23a3a7;
+            color:#fff;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding:0px 15px;
+            line-height:35px;
+            cursor:pointer;
+        }
+
+        .box-file-input label:after{
+            content:"파일등록";
+        }
+
+        .box-file-input .file-input{
+            display:none;
+        }
+
+        .box-file-input .filename{
+            display:inline-block;
+            padding-left:10px;
+        }
+
+        #label{
+            margin-top: 10px;
+        }
+
+        /* 접근성 탭 포커스 스타일 */
+        .file-focus {
+            outline: 1px dotted #d2310e;
+        }
+        </style>
+
+    <script type="text/javascript">
+        
+    $(document).on("change", ".thumbnail-input", function(){
+     
+        $filename = $(this).val();
+
+        if($filename == "")
+            $filename = "썸네일을 선택해주세요.";
+
+        $(".thumbnailname").text($filename);
+
+    })
+
+    $(document).on("change", ".music-input", function(){
+        $filename = $(this).val();
+
+        if($filename == "")
+            $filename = "음악을 선택해주세요.";
+
+        $(".musicname").text($filename);
+    })
+
+    $(function() {
+          $('#category-btn').bind('click', function() {
+            $.getJSON('/popup',
+                function(data) {
+              //do nothing
+            });
+            return false;
+          });
+        }); 
+
+    </script>
 </html>

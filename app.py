@@ -1,13 +1,15 @@
-from flask import Flask , render_template
+from flask import Flask,render_template
+from flask_restful import Resource, Api
 from flask_pymongo import PyMongo
 from pymongo import MongoClient
 from bson.json_util import dumps
-from bson import json_util
+# from bson import json_util
 
 
 import json
 
 app = Flask(__name__)
+api = Api(app)
 
 my_client = MongoClient("mongodb://localhost:27017/")
 mydb = my_client['focus_flask_api_database']
@@ -43,10 +45,22 @@ mongo = PyMongo(app)
 def hello():
     x = dumps(mycol.find({}, {'_id': False}),indent = 4)
     return render_template('index.html',body = x)
-    
-@app.route("/addSong")
-def add():
-    
+
+@app.route("/popup")
+def popup():
+    return render_template('popup.html')
+
+
+class UploadSong(Resource):
+    def post(self):
+        return {'status': 'success'}
+
+class GetAllList(Resource):
+    def post(self):
+        return {'status' : 'success'}        
+
+api.add_resource(UploadSong, '/upload')
+api.add_resource(GetAllList, '/all')
 
 if __name__ == "__main__":              
-    app.run(host="127.0.0.1", port="8080")
+    app.run(host="127.0.0.1", port="8080",debug=True)
