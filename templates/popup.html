@@ -1,16 +1,33 @@
 <html>
-    <head></head>
-    
+    <head>
+        <script src="https://d3js.org/d3.v5.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+    </head>
     <body id="main">
-        <button>버튼1</button>
+        <div class="row" id="btn-div">
+            <!-- {{popup_data}} -->
+        </div>
+        
     </body>
 
     <style>
-        button {
-            width:100px;
-            background-color: #f8585b;
-            border: none;
-            color:#fff;
+
+        /* Create four equal columns that floats next to each other */
+    
+
+        /* Clear floats after the columns */
+        .row:after {
+            display: table;
+            clear: both;
+        }
+
+        div.column {
+            width: 94px;
+            background-color: white;
+            border: 2px solid black;
+            /* border : none; */
+            color:black;
             padding: 15px 0;
             text-align: center;
             text-decoration: none;
@@ -21,6 +38,55 @@
             border-radius: 10px;
         }
 
+        /* div.column:hover {
+            width: 94px;
+            background-color: black;
+            border : none;
+            color:white;
+            padding: 15px 0;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 15px;
+            margin: 4px;
+            cursor: pointer;
+            border-radius: 10px;
+        } */
+
+
 
     </style>
+    <script type="text/javascript">
+
+        var categoryObj = JSON.parse('{{ popup_data | tojson | safe}}');
+
+        for (var x in categoryObj.result){
+            value = categoryObj.result[x].name
+            var newdiv = $('<div>',{class: 'column',id : x,text: value});
+            $('#btn-div').append( newdiv);
+        }       
+
+        $(".column").click(function(){
+            console.log($(this).css("background-color"))
+            if($(this).css("background-color") === "rgb(255, 255, 255)"){
+                $(this).css('background-color', 'black');
+                $(this).css('color', 'white');
+                $(this).css('border', 'none');
+            }else{
+                $(this).css('background-color', 'white');
+                $(this).css('color', 'black');
+                $(this).css('border', '2px solid black');
+            }
+        })
+
+        function getSeleteItem(){
+            var item = document.querySelectorAll('.column');
+            return Array.prototype.map.call(item, function(node) {
+                // var out1 = node.textContent.replace(/SKU:/g, "");
+                // var out2 = out1.replace(/\s/g, '');
+                return node;
+            });
+        }
+
+    </script>
 </html>
