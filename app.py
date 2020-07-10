@@ -86,8 +86,10 @@ mongo = PyMongo(app)
 
 @app.route("/")
 def hello():
-    x = dumps(song_col.find({}, {'_id': False}),indent = 4)
-    return render_template('index.html',body = x)
+    output = []
+    for value in category_col.find():
+        output.append({'name' : value['name']})
+    return render_template('index.html',category_data = output)
 
 @app.route("/sub")
 def popup_sub():

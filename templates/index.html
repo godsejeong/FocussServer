@@ -41,7 +41,7 @@
                 <label>항목
                     <form>
                         <select form="carform" id="category-btn" name="category-main" readonly placeholder="항목을 선택해주세요">
-                            <option>asdfasdf</option>
+                            <!-- <option>asdfasdf</option> -->
                         </select>
                     </form>
                     
@@ -261,6 +261,16 @@
         </style>
 
     <script type="text/javascript">
+
+    var categoryObj = JSON.parse('{{ category_data | tojson | safe}}');
+
+    for (var x in categoryObj){
+        console.log(categoryObj)
+        value = categoryObj[x].name
+        var newoption = $('<option>',{text: value});
+        $('#category-btn').append( newoption);
+    }       
+
         
     $(document).on("change", ".thumbnail-input", function(){
      
