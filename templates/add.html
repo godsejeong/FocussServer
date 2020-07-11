@@ -10,17 +10,38 @@
 
         <div class="form_div">
             <label id="label-add">입력
-                <input type="text" name="input" placeholder="아티스트명을 입력해주세요">
+                <input type="text" name="input" >
             </label>
         </div>
 
             <input type="submit" value="추가하기" onclick="Api()">
+            <input type="submit" value="삭제하기" onclick="OpenPop(this.id)">
 
+        </div>
     </div>
+
+    <div class="dim-layer">
+        <div class="dimBg"></div>
+        <div id="layer2" class="pop-layer">
+            <div class="pop-container">
+                <div class="pop-conts" id="pop-conts" >
+                </div>
+            </div>
+
+        <div class="btn-r">
+            <a class="btn-layerOk">확인</a>
+            <a class="btn-layerClose">닫기</a>
+        </div>
+
+        </div>
     </div>
+
     </body>
 
     <style>
+
+        
+
         input[type=text], select {
             width: 100%;
             padding: 12px 20px;
@@ -36,7 +57,7 @@
             background-color: #4CAF50;
             color: white;
             padding: 14px 20px;
-            margin: 30px 0;
+            margin: 5px 0;
             border: none;
             border-radius: 4px;
             cursor: pointer;
@@ -50,6 +71,7 @@
             border-radius: 5px;
             background-color: #f2f2f2;
             margin: auto;
+            margin-bottom: 30px;
             padding: 20px;
         }
 
@@ -62,6 +84,106 @@
             padding: 0;
             margin: 0;
         }
+
+        .pop-layer .pop-container {
+            padding: 20px 25px;
+        }
+
+        .pop-container{
+            overflow: scroll;
+        }
+
+        .pop-layer p.ctxt {
+            color: #666;
+            line-height: 25px;
+        }
+
+        .pop-layer .btn-r {
+            width: 100%;
+            margin-top: 20px;
+            padding-top: 10px;
+            text-align: center;
+        }
+
+        .pop-layer {
+            display: none;
+            position: absolute;
+            /* justify-content: center; */
+            height: 50%;
+            width: 50%;
+            padding: 0;
+            margin: 0;
+            top: 50%;
+            left: 50%;
+            /* background-color: #fff;
+            border: 5px solid #4CAF50; */
+            z-index: 10;
+        }
+
+        .dim-layer {
+            display: none;
+            position: fixed;
+            _position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+        }
+
+        .dim-layer .dimBg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            opacity: .5;
+            filter: alpha(opacity=50);
+        }
+
+        .dim-layer .pop-layer{
+            display: block;
+        }
+
+        a.btn-layerClose{
+            display: inline-block;
+            height: 25px;
+            padding: 0 14px 0;
+            background-color: #4CAF50;
+            font-size: 13px;
+            color: #fff;
+            line-height: 25px;
+        }
+
+        a.btn-layerOk{
+            display: inline-block;
+            height: 25px;
+            padding: 0 14px 0;
+            background-color: #4CAF50;
+            font-size: 13px;
+            color: #fff;
+            line-height: 25px;
+        }
+
+        a.btn-layerClose:hover {
+            background-color: #1f326a;
+            color: #fff;
+        }
+
+        a.btn-layerOk:hover {
+            background-color: #1f326a;
+            color: #fff;
+        }
+
+        .pop-conts{
+            width: 100%;
+            margin: 0 auto;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+
     </style>
     <script  type=text/javascript>
         var tv = '{{add}}';
@@ -104,6 +226,104 @@
                 alert("아무것도 입력되어있지 않습니다.");
             }
            
+        }
+
+        function OpenPop(id){
+            console.log(id)
+            if(tv == 'sub')
+                $("#pop-conts").load("sub").show();
+            else if(tv == 'tag')
+                $("#pop-conts").load("tag").show();
+            
+            var $el = $("#layer2")
+
+            var isDim = $el.prev().hasClass('dimBg');
+            
+            isDim ? $('.dim-layer').fadeIn() : $el.fadeIn();
+
+            var $elWidth = ~~($el.outerWidth()),
+                $elHeight = ~~($el.outerHeight()),
+                docWidth = $(document).width(),
+                docHeight = $(document).height();
+
+            // 화면의 중앙에 레이어를 띄운다.
+            if ($elHeight < docHeight || $elWidth < docWidth) {
+                $el.css({
+                    marginTop: -$elHeight /2,
+                    marginLeft: -$elWidth/2
+                })
+            } else {
+                $el.css({top: 0, left: 0});
+            }
+
+            $el.find('a.btn-layerOk').click(function(){
+                isDim ? $('.dim-layer').fadeOut() : $el.fadeOut();
+                
+                selete_item = getSeleteItem()
+                
+                if(tv == "tag"){
+                    removeTag(selete_item)
+                }else{
+                    removeSub(selete_item)
+                }
+                
+                return false;
+            });
+
+            $el.find('a.btn-layerClose').click(function(){
+                isDim ? $('.dim-layer').fadeOut() : $el.fadeOut(); // 닫기 버튼을 클릭하면 레이어가 닫힌다.
+                return false;
+            });
+
+            $('.layer .dimBg').click(function(){
+                $('.dim-layer').fadeOut();
+                return false;
+            });
+
+            function getSeleteItem(){
+                const array = []
+                var item = document.querySelectorAll('.column');
+                Array.prototype.map.call(item, function(node) {
+                    // var out1 = node.textContent.replace(/SKU:/g, "");
+                    // var out2 = out1.replace(/\s/g, '');
+                    if($(node).css("background-color") === "rgb(0, 0, 0)"){
+                        console.log(node.textContent)
+                        array.push(node.textContent)
+                    }
+                });
+
+                return array;
+            }
+
+        function removeTag(list) {
+            $.ajax({
+                        type : 'POST',
+                        url : 'http://127.0.0.1:8080/removeTag',
+                        data:{
+                            tag : list
+                        },
+                        dataType : 'JSON',
+                        success : function(result){
+                            alert(result.StatusCode + " : "+ result.Message);
+                        }
+                    });
+        }
+
+        function removeSub(list) {
+            console.log(list);
+            $.ajax({
+                        type : 'POST',
+                        url : 'http://127.0.0.1:8080/removeSub',
+                        data:{
+                            sub : list
+                        },
+                        dataType : 'JSON',
+                        success : function(result){
+                            alert(result.StatusCode + " : "+ result.Message);
+                        }
+                    });
+        }
+
         }
     </script>
 

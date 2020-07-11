@@ -158,7 +158,40 @@ def sub_post():
         else:
             return {'StatusCode': '403', 'Message': '서브 항목이 이미 존재합니다!!'}
     except Exception as e:
-        return {'StatusCode': '400', 'Message': str(e)}        
+        return {'StatusCode': '400', 'Message': str(e)}     
+
+@app.route("/removeSub",methods =['POST'])
+def remote_sub_post():
+    try:
+        sub_value = request.form.getlist('sub[]')
+
+        for sub_list in sub_value:
+            for value in sub_category_col.find():
+                if(sub_list == value['name']):
+                    delete_col = {'name' : sub_list}
+                    sub_category_col.delete_one(delete_col)    
+
+        return {'StatusCode': '200', 'Message': '삭제되었습니다.'}
+    
+    except Exception as e:
+        return {'StatusCode': '400', 'Message': str(e)}
+
+@app.route("/removeTag",methods =['POST'])
+def remote_tag_post():
+    try:
+        tag_value = request.form.getlist('tag[]')
+
+        for tag_list in tag_value:
+            for value in tag_col.find():
+                if(tag_list == value['name']):
+                    delete_col = {'name' : tag_list}
+                    tag_col.delete_one(delete_col)    
+
+        return {'StatusCode': '200', 'Message': '삭제되었습니다.'}
+    
+    except Exception as e:
+        return {'StatusCode': '400', 'Message': str(e)}
+
 
 class UploadSong(Resource):
     def post(self):
