@@ -58,7 +58,14 @@
             </form>
         </div>
 
-        <input type="submit" value="올리기">
+            <input type="submit" value="올리기">
+
+
+    <div class="btn-div">
+        <button id="add-tag" class= "add-tag" onclick="location.href='/tagadd'">태그추가</button>
+        <button id="add-sub" onclick="location.href='/subadd'">서브항목추가</button>
+    </div>
+
     </div>
 
     </div>
@@ -117,6 +124,13 @@
           padding: 20px;
         }
 
+        .btn-div{
+
+            width: 100%;
+            display: flex;
+            justify-content: flex-end
+        }
+
         .main_div{
             display: flex;
             flex-direction: column;
@@ -125,6 +139,22 @@
             height: 100%;
             padding: 0;
             margin: 0;
+        }
+
+        button.add-tag{
+            margin-right: 20px;
+        }
+
+        button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            border-radius: 4px; 
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
         }
        
         .box-file-input label{
@@ -300,11 +330,31 @@
             });
             return false;
           });
-        }); 
+        });
+
+    $(function() {
+        $('#add-sub').bind('click', function() {
+        $.getJSON('/sub',
+            function(data) {
+            //do nothing
+        });
+        return false;
+        });
+    }); 
+    
+    $(function() {
+        $('#add-tag').bind('click', function() {
+        $.getJSON('/subadd',
+            function(data) {
+            //do nothing
+        });
+        return false;
+        });
+    }); 
 
     $(function() {
           $('#tag-btn').bind('click', function() {
-            $.getJSON('/tag',
+            $.getJSON('/tagtag',
                 function(data) {
               //do nothing
             });

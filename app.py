@@ -106,6 +106,14 @@ def popup_tag():
         output.append({'name' : value['name']})
     return render_template('popup.html',popup_data = {'result' : output})
 
+@app.route("/tagadd")
+def add_tag_page():
+    return render_template('add.html',add = "tag")
+
+
+@app.route("/subadd")
+def add_sub_page():
+    return render_template('add.html',add = "sub")
 
 class UploadSong(Resource):
     def post(self):

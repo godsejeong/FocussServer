@@ -1,0 +1,74 @@
+<html>
+    <body>
+
+    <div class="main_div">
+        <div>
+        <div class="form_div">
+            <form action="/action_page.php">
+
+            <label id="label-add">입력
+                <input type="text" name="input" placeholder="아티스트명을 입력해주세요">
+            </label>
+        </div>
+
+        <input type="submit" value="추가하기">
+
+    </div>
+    </div>
+    </body>
+
+    <style>
+        input[type=text], select {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        input[type=submit] {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 30px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        input[type=submit]:hover {
+            background-color: #45a049;
+        }
+        
+        .form_div {
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .main_div{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+
+    <script>
+        var tv = '{{add}}';
+        if(tv == "tag"){
+            document.getElementsByName('input')[0].placeholder='태그를 입력해주세요';
+
+        }else{
+            document.getElementsByName('input')[0].placeholder='서브항목을 입력해주세요';
+        }
+    </script>
+
+</html>
