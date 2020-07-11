@@ -1,4 +1,4 @@
-from flask import Flask,render_template
+from flask import Flask,render_template ,request
 from flask_restful import Resource, Api
 from flask_pymongo import PyMongo
 from pymongo import MongoClient
@@ -115,6 +115,51 @@ def add_tag_page():
 def add_sub_page():
     return render_template('add.html',add = "sub")
 
+@app.route("/uploadTag",methods =['POST'])
+def tag_post():
+    try:
+        tag_value = request.form['tag']
+
+        colis = False
+        for value in tag_col.find():
+            if(tag_value == value['name']):
+                colis = False
+            else:
+                colis = True
+            
+
+        if(colis):
+            print(tag_value)
+            tag_item = {'name' : tag_value},
+            tag_col.insert_many(tag_item)
+            return {'StatusCode': '200', 'Message': '입력하신 태그가 추가되었습니다.'}
+        else:
+            return {'StatusCode': '403', 'Message': '태그내용이 이미 존재합니다!!'}
+    except Exception as e:
+        return {'StatusCode': '400', 'Message': str(e)}
+
+@app.route("/uploadSub",methods =['POST'])
+def sub_post():
+    try:
+        sub_value = request.form['sub']
+
+        colis = False
+        for value in sub_category_col.find():
+            if(sub_value == value['name']):
+                colis = False
+            else:
+                colis = True
+
+        if(colis):
+            print(sub_value)
+            sub_item = {'name' : sub_value},
+            sub_category_col.insert_many(sub_item)
+            return {'StatusCode': '200', 'Message': '입력하신 서브항목이 추가되었습니다.'}
+        else:
+            return {'StatusCode': '403', 'Message': '서브 항목이 이미 존재합니다!!'}
+    except Exception as e:
+        return {'StatusCode': '400', 'Message': str(e)}        
+
 class UploadSong(Resource):
     def post(self):
         return {'status': 'success'}
@@ -125,6 +170,7 @@ class GetAllList(Resource):
 
 api.add_resource(UploadSong, '/upload')
 api.add_resource(GetAllList, '/all')
+# api.add_resource(GetAllList, '/addTag')
 
 if __name__ == "__main__":              
     app.run(host="127.0.0.1", port="8080",debug=True)

@@ -1,17 +1,20 @@
 <html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+    </head>
     <body>
 
     <div class="main_div">
         <div>
-        <div class="form_div">
-            <form action="/action_page.php">
 
+        <div class="form_div">
             <label id="label-add">입력
                 <input type="text" name="input" placeholder="아티스트명을 입력해주세요">
             </label>
         </div>
 
-        <input type="submit" value="추가하기">
+            <input type="submit" value="추가하기" onclick="Api()">
 
     </div>
     </div>
@@ -60,14 +63,47 @@
             margin: 0;
         }
     </style>
-
-    <script>
+    <script  type=text/javascript>
         var tv = '{{add}}';
         if(tv == "tag"){
             document.getElementsByName('input')[0].placeholder='태그를 입력해주세요';
-
         }else{
             document.getElementsByName('input')[0].placeholder='서브항목을 입력해주세요';
+        }
+
+        function Api(){
+            text = document.getElementsByName('input')[0].value
+            if(text != "" ){
+                if(tv == "tag"){
+                    $.ajax({
+                        type : 'POST',
+                        url : 'http://127.0.0.1:8080/uploadTag',
+                        data:{
+                            tag : text
+                        },
+                        dataType : 'JSON',
+                        success : function(result){
+                            // json = JSON.parse(result)
+                            alert(result.StatusCode + " : "+ result.Message);
+                        }
+                    });
+                }else{
+                    $.ajax({
+                        type : 'POST',
+                        url : 'http://127.0.0.1:8080/uploadSub',
+                        data:{
+                            sub : text
+                        },
+                        dataType : 'JSON',
+                        success : function(result){
+                            alert(result.StatusCode + " : "+ result.Message);
+                        }
+                    });
+                }
+            }else{
+                alert("아무것도 입력되어있지 않습니다.");
+            }
+           
         }
     </script>
 
