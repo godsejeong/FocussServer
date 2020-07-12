@@ -74,6 +74,14 @@ def hello():
         output.append({'name' : value['name']})
     return render_template('index.html',category_data = output)
 
+@app.route("/list")
+def list_post():
+    output = []
+    for value in song_col.find():
+        output.append({'name' : value['name'],'artist' : value['artist'],'literaryProperty' : value['literaryProperty'],
+        'thumbnail' : value['thumbnail'],'music' : value['music'],'category' : value['category'],'sub' : value['sub'],'tag' : value['tag']})
+    return render_template('list.html',song = {'result' : output})    
+
 @app.route("/sub")
 def popup_sub():
     output = []
@@ -183,9 +191,19 @@ def thumbnails_download(filename):
 def songs_download(filename):
     return send_from_directory(directory='./uploads/songs/', filename=filename)            
 
+@app.route("/removeSong",methods = ['POST'])
+def remove_song_post():
+    try:
+        name = request.form['name']
+        delete_col = {'name' : name}
+        song_col.delete_one(delete_col)
+        return {'StatusCode': '200', 'Message': '삭제되었습니다.'}
+    except Exception as e:
+        return {'StatusCode': '400', 'Message': str(e)}
+
 @app.route("/uploadSong",methods = ['POST'])
 def upload_song_post():
-    # try:
+    try:
         name = request.form['name']  #이름 String
         artist = request.form['artist']  #아티스트 String
         literaryProperty = request.form['literaryProperty']   #저작권 String
@@ -197,18 +215,48 @@ def upload_song_post():
 
         thumbnail.save('./uploads/thumbnails/' + secure_filename(thumbnail.filename))
         music.save('./uploads/songs/' + secure_filename(music.filename))
-        
-        
 
-        song = {'name' : name , 'artist' : artist , 'literaryProperty' : literaryProperty ,
-         'thumbnail' : thumbnail.filename , 'music' : music.filename , 'category' : category , 'sub' : sub, 'tag' : tag}
+        tagList = tag.strip().split(' ')
+        subList = sub.strip().split(' ')
 
-        print(song)
+        #이름,음악 파일명,썸네일 파일명
+        nameis = False
+        thumbnailis = False
+        musicis = False
 
-        return {'StatusCode': '200', 'Message': '정상적으로 처리되었습니다.'}
+        for value in song_col.find():
+            if(name == value['name']):
+                nameis = True
+            else:
+                nameis = False
 
-    # except Exception as e:
-    #     return {'StatusCode': '400', 'Message': str(e)}
+            if(thumbnail.filename == value['thumbnail']):
+                thumbnailis = True
+            else:
+                thumbnailis = False
+
+            if(music.filename == value['music']):
+                musicis = True
+            else:
+                musicis = False
+
+
+        song = [{'name' : name , 'artist' : artist , 'literaryProperty' : literaryProperty ,
+         'thumbnail' : thumbnail.filename , 'music' : music.filename , 'category' : category , 'sub' : subList, 'tag' : tagList}]
+
+
+        if(nameis):
+            return {'StatusCode': '403', 'Message': '이름이 이미 존재합니다.'}
+        elif(thumbnailis):
+            return {'StatusCode': '403', 'Message': '썸네일명이 이미 존재합니다.'}
+        elif(musicis):
+            return {'StatusCode': '403', 'Message': '음악명이 이미 존재합니다.'}
+        else:
+            song_col.insert_many(song)
+            return {'StatusCode': '200', 'Message': '정상적으로 처리되었습니다.'}
+
+    except Exception as e:
+        return {'StatusCode': '400', 'Message': str(e)}
 
 class UploadSong(Resource):
     def post(self):
@@ -222,5 +270,5 @@ api.add_resource(UploadSong, '/upload')
 api.add_resource(GetAllList, '/all')
 # api.add_resource(GetAllList, '/addTag')
 
-if __name__ == "__main__":              
+if __name__ == "__main__":
     app.run(host="127.0.0.1", port="8080",debug=True)

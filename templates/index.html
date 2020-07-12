@@ -124,7 +124,6 @@
         }
 
         .btn-div{
-
             width: 100%;
             display: flex;
             justify-content: flex-end
@@ -460,15 +459,15 @@
         }else{
             console.log("name : " + _name)
 
-            var formData = new FormData(); 
+            var formData = new FormData();
             formData.append("name", _name);
-            formData.append("artist", _artist); 
+            formData.append("artist", _artist);
             formData.append("literaryProperty", _literaryProperty);
             formData.append("thumbnail", _thumbnail);
             formData.append("music", _music);
             formData.append("category", _category);
-            formData.append("sub", subList);
-            formData.append("tag", tagList);
+            formData.append("sub", _sub);
+            formData.append("tag", _tag);
 
             $.ajax({
                     type : 'POST',

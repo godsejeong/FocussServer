@@ -199,7 +199,7 @@
                 if(tv == "tag"){
                     $.ajax({
                         type : 'POST',
-                        url : 'http://127.0.0.1:8080/uploadTag',
+                        url : '/uploadTag',
                         data:{
                             tag : text
                         },
@@ -212,7 +212,7 @@
                 }else{
                     $.ajax({
                         type : 'POST',
-                        url : 'http://127.0.0.1:8080/uploadSub',
+                        url : '/uploadSub',
                         data:{
                             sub : text
                         },
@@ -296,7 +296,7 @@
         function removeTag(list) {
             $.ajax({
                         type : 'POST',
-                        url : 'http://127.0.0.1:8080/removeTag',
+                        url : '/removeTag',
                         data:{
                             tag : list
                         },
@@ -311,7 +311,7 @@
             console.log(list);
             $.ajax({
                         type : 'POST',
-                        url : 'http://127.0.0.1:8080/removeSub',
+                        url : '/removeSub',
                         data:{
                             sub : list
                         },
