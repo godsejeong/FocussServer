@@ -284,8 +284,6 @@
                 const array = []
                 var item = document.querySelectorAll('.column');
                 Array.prototype.map.call(item, function(node) {
-                    // var out1 = node.textContent.replace(/SKU:/g, "");
-                    // var out2 = out1.replace(/\s/g, '');
                     if($(node).css("background-color") === "rgb(0, 0, 0)"){
                         console.log(node.textContent)
                         array.push(node.textContent)

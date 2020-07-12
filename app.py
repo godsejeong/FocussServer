@@ -1,10 +1,9 @@
-from flask import Flask,render_template ,request
+from flask import Flask,render_template ,request ,send_from_directory
 from flask_restful import Resource, Api
 from flask_pymongo import PyMongo
 from pymongo import MongoClient
 from bson.json_util import dumps
-# from bson import json_util
-
+from werkzeug.utils import secure_filename
 
 import json
 
@@ -20,21 +19,6 @@ sub_category_col = mydb['sub_category_data']
 tag_col = mydb['tag_data']
 
 def createDB():
-
-    mylist = [
-    { "name": "Amy", "address": "Apple st 652"},
-    { "name": "Hannah", "address": "Mountain 21"},
-    { "name": "Michael", "address": "Valley 345"},
-    { "name": "Sandy", "address": "Ocean blvd 2"},
-    { "name": "Betty", "address": "Green Grass 1"},
-    { "name": "Richard", "address": "Sky st 331"},
-    { "name": "Susan", "address": "One way 98"},
-    { "name": "Vicky", "address": "Yellow Garden 2"},
-    { "name": "Ben", "address": "Park Lane 38"},
-    { "name": "William", "address": "Central st 954"},
-    { "name": "Chuck", "address": "Main Road 989"},
-    { "name": "Viola", "address": "Sideway 1633"}
-    ]
     
     mycategory = [
         {'name' : "ASMR"},
@@ -67,7 +51,6 @@ def createDB():
     ];
     
     category_col.insert_many(mycategory)
-    song_col.insert_many(mylist)
     sub_category_col.insert_many(mysubcategory)
     tag_col.insert_many(mystag)
 
@@ -192,6 +175,40 @@ def remote_tag_post():
     except Exception as e:
         return {'StatusCode': '400', 'Message': str(e)}
 
+@app.route('/thumbnails/<path:filename>', methods=['GET', 'POST'])
+def thumbnails_download(filename):
+    return send_from_directory(directory='./uploads/thumbnails/', filename=filename)
+
+@app.route('/songs/<path:filename>', methods=['GET', 'POST'])
+def songs_download(filename):
+    return send_from_directory(directory='./uploads/songs/', filename=filename)            
+
+@app.route("/uploadSong",methods = ['POST'])
+def upload_song_post():
+    # try:
+        name = request.form['name']  #이름 String
+        artist = request.form['artist']  #아티스트 String
+        literaryProperty = request.form['literaryProperty']   #저작권 String
+        thumbnail = request.files['thumbnail']   #썸네일 Fils
+        music = request.files['music']   #음악 Fils
+        category = request.form['category'] #항목 String
+        sub = request.form['sub'] #서브항목 List
+        tag = request.form['tag'] #태그 List
+
+        thumbnail.save('./uploads/thumbnails/' + secure_filename(thumbnail.filename))
+        music.save('./uploads/songs/' + secure_filename(music.filename))
+        
+        
+
+        song = {'name' : name , 'artist' : artist , 'literaryProperty' : literaryProperty ,
+         'thumbnail' : thumbnail.filename , 'music' : music.filename , 'category' : category , 'sub' : sub, 'tag' : tag}
+
+        print(song)
+
+        return {'StatusCode': '200', 'Message': '정상적으로 처리되었습니다.'}
+
+    # except Exception as e:
+    #     return {'StatusCode': '400', 'Message': str(e)}
 
 class UploadSong(Resource):
     def post(self):
