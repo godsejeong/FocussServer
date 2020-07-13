@@ -189,8 +189,10 @@
         var tv = '{{add}}';
         if(tv == "tag"){
             document.getElementsByName('input')[0].placeholder='태그를 입력해주세요';
-        }else{
+        }else if(tv == 'tag'){
             document.getElementsByName('input')[0].placeholder='서브항목을 입력해주세요';
+        }else if(tv == 'category'){
+            document.getElementsByName('input')[0].placeholder='항목을 입력해주세요';
         }
 
         function Api(){
@@ -209,12 +211,24 @@
                             alert(result.StatusCode + " : "+ result.Message);
                         }
                     });
-                }else{
+                }else if(tv == 'tag'){
                     $.ajax({
                         type : 'POST',
                         url : '/uploadSub',
                         data:{
                             sub : text
+                        },
+                        dataType : 'JSON',
+                        success : function(result){
+                            alert(result.StatusCode + " : "+ result.Message);
+                        }
+                    });
+                }else if(tv == 'category'){
+                    $.ajax({
+                        type : 'POST',
+                        url : '/uploadCategory',
+                        data:{
+                            category : text
                         },
                         dataType : 'JSON',
                         success : function(result){
@@ -234,6 +248,8 @@
                 $("#pop-conts").load("sub").show();
             else if(tv == 'tag')
                 $("#pop-conts").load("tag").show();
+            else if(tv == 'category')
+                $("#pop-conts").load("category").show();
             
             var $el = $("#layer2")
 
@@ -263,8 +279,10 @@
                 
                 if(tv == "tag"){
                     removeTag(selete_item)
-                }else{
+                }else if(tv == 'tag'){
                     removeSub(selete_item)
+                }else if(tv == 'category'){
+                    removeCategory(selete_item)
                 }
                 
                 return false;
@@ -314,6 +332,21 @@
                         url : '/removeSub',
                         data:{
                             sub : list
+                        },
+                        dataType : 'JSON',
+                        success : function(result){
+                            alert(result.StatusCode + " : "+ result.Message);
+                        }
+                    });
+        }
+
+        function removeCategory(list) {
+            console.log(list);
+            $.ajax({
+                        type : 'POST',
+                        url : '/removeCategory',
+                        data:{
+                            category : list
                         },
                         dataType : 'JSON',
                         success : function(result){

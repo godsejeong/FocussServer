@@ -62,7 +62,6 @@ def deleteDB():
     category_col.drop()
     sub_category_col.drop()
     tag_col.drop()
-    
 # deleteDB()
 
 app.config['MONGO_DBNAME'] = 'focusdb'
@@ -93,12 +92,21 @@ def popup_sub():
     return render_template('popup.html',popup_data = {'result' : output})
 
 
+
+
 @app.route("/tag")
 def popup_tag():
     output = []
     for value in tag_col.find():
         output.append({'name' : value['name']})
     return render_template('popup.html',popup_data = {'result' : output})
+
+@app.route("/category")
+def popup_category_col():
+    output = []
+    for value in category_col.find():
+        output.append({'name' : value['name']})
+    return render_template('popup.html',popup_data = {'result' : output})    
 
 @app.route("/tagadd")
 def add_tag_page():
@@ -108,6 +116,10 @@ def add_tag_page():
 @app.route("/subadd")
 def add_sub_page():
     return render_template('add.html',add = "sub")
+
+@app.route("/categoryadd")
+def add_category():
+    return render_template('add.html',add = "category")    
 
 @app.route("/uploadTag",methods =['POST'])
 def tag_post():
@@ -152,7 +164,29 @@ def sub_post():
         else:
             return {'StatusCode': '403', 'Message': '서브 항목이 이미 존재합니다!!'}
     except Exception as e:
-        return {'StatusCode': '400', 'Message': str(e)}     
+        return {'StatusCode': '400', 'Message': str(e)} 
+
+@app.route("/uploadCategory",methods =['POST'])
+def category_post():
+    try:
+        category_value = request.form['category']
+
+        colis = True
+        for value in category_col.find():
+            if(category_value == value['name']):
+                colis = False
+            else:
+                colis = True
+
+        if(colis):
+            print(category_value)
+            category_item = {'name' : category_value},
+            category_col.insert_many(category_item)
+            return {'StatusCode': '200', 'Message': '입력하신 항목이 추가되었습니다.'}
+        else:
+            return {'StatusCode': '403', 'Message': '항목이 이미 존재합니다!!'}
+    except Exception as e:
+        return {'StatusCode': '400', 'Message': str(e)}             
 
 @app.route("/removeSub",methods =['POST'])
 def remote_sub_post():
@@ -169,6 +203,22 @@ def remote_sub_post():
     
     except Exception as e:
         return {'StatusCode': '400', 'Message': str(e)}
+
+@app.route("/removeCategory",methods =['POST'])
+def remote_category_post():
+    try:
+        category_value = request.form.getlist('category[]')
+
+        for category_list in category_value:
+            for value in category_col.find():
+                if(category_list == value['name']):
+                    delete_col = {'name' : category_list}
+                    category_col.delete_one(delete_col)    
+
+        return {'StatusCode': '200', 'Message': '삭제되었습니다.'}
+    
+    except Exception as e:
+        return {'StatusCode': '400', 'Message': str(e)}        
 
 @app.route("/removeTag",methods =['POST'])
 def remote_tag_post():
