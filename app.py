@@ -21,42 +21,6 @@ category_col = mydb['category_data']
 sub_category_col = mydb['sub_category_data']
 tag_col = mydb['tag_data']
 
-def createDB():
-    
-    mycategory = [
-        {'name' : "ASMR"},
-        {'name' : "백색소음"},
-        {'name' : "파아노"}
-    ];
-    
-    mysubcategory = [
-        {'name' : "자연"},
-        {'name' : "공부"},
-        {'name' : "가요"},
-        {'name' : "OST"}
-    ];
-
-    mystag = [
-        {'name' : "슬픔"},
-        {'name' : "감동"},
-        {'name' : "평화"},
-        {'name' : "애절"},
-        {'name' : "신남"},
-        {'name' : "우울"},
-        {'name' : "신비"},
-        {'name' : "잔잔"},
-        {'name' : "즐거움"},
-        {'name' : "일상"},
-        {'name' : "활기"},
-        {'name' : "행복"},
-        {'name' : "경쾌"},
-        {'name' : "시원"},
-    ];
-    
-    category_col.insert_many(mycategory)
-    sub_category_col.insert_many(mysubcategory)
-    tag_col.insert_many(mystag)
-
 def deleteDB():
     song_col.drop()
     category_col.drop()
