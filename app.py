@@ -114,7 +114,7 @@ def tag_post():
     try:
         tag_value = request.form['tag']
 
-        colis = False
+        colis = True
         for value in tag_col.find():
             if(tag_value == value['name']):
                 colis = False
@@ -137,7 +137,7 @@ def sub_post():
     try:
         sub_value = request.form['sub']
 
-        colis = False
+        colis = True
         for value in sub_category_col.find():
             if(sub_value == value['name']):
                 colis = False
