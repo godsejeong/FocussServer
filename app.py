@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 api = Api(app)
 
-my_client = MongoClient("mongodb://localhost:27017/")
+my_client = MongoClient("mongodb://52.15.223.7:27017/")
 mydb = my_client['focus_flask_api_database']
 song_col = mydb['song_data']
 category_col = mydb['category_data']
