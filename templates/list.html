@@ -87,11 +87,20 @@
                 var nametd = $('<td>',{class: 'td',text: list.result[x].name});
                 var artisttd = $('<td>',{class: 'td',text: list.result[x].artist});
                 var literaryPropertytd = $('<td>',{class: 'td',text: list.result[x].literaryProperty});
-                var thumbnail = $('<td>',{class: 'td',text: list.result[x].thumbnail});
-                var music = $('<td>',{class: 'td',text: list.result[x].music});
+                var thumbnail = $('<td>',{class: 'td'});
+                var music = $('<td>',{class: 'td'});
                 var category = $('<td>',{class: 'td',text: list.result[x].category});
                 var sub = $('<td>',{class: 'td',text: list.result[x].sub});
                 var tag = $('<td>',{class: 'td',text: list.result[x].tag});
+                
+                var thumbnail_a = $('<a>',{href : '/thumbnails/'+ list.result[x].thumbnail})
+                var music_a = $('<a>',{href : '/songs/'+ list.result[x].music})
+
+                thumbnail_a.append(list.result[x].thumbnail)
+                music_a.append(list.result[x].music)
+
+                thumbnail.append(thumbnail_a)
+                music.append(music_a)
 
                 newtr.append(nametd)
                 newtr.append(artisttd)

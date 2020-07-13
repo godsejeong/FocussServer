@@ -230,8 +230,8 @@ def upload_song_post():
         sub = request.form['sub'] #서브항목 List
         tag = request.form['tag'] #태그 List
 
-        thumbnail.save('./uploads/thumbnails/' + secure_filename(thumbnail.filename))
-        music.save('./uploads/songs/' + secure_filename(music.filename))
+        thumbnail.save('./uploads/thumbnails/' + (thumbnail.filename))
+        music.save('./uploads/songs/' + (music.filename))
 
         tagList = tag.strip().split(' ')
         subList = sub.strip().split(' ')
