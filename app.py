@@ -1,3 +1,6 @@
+
+# -*- coding: utf-8 -*- 
+
 from flask import Flask,render_template ,request ,send_from_directory
 from flask_restful import Resource, Api
 from flask_pymongo import PyMongo
