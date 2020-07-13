@@ -26,7 +26,7 @@ def deleteDB():
     category_col.drop()
     sub_category_col.drop()
     tag_col.drop()
-# deleteDB()
+deleteDB()
 
 app.config['MONGO_DBNAME'] = 'focusdb'
 app.config['MONGO_URI'] = 'mongodb://localhost:27017/focusdb'
