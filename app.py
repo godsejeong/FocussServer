@@ -45,7 +45,7 @@ def hello():
 def list_post():
     output = []
     for value in song_col.find():
-        output.append({'name' : value['name'],'artist' : value['artist'],'literaryProperty' : value['literaryProperty'],
+        output.append({'name' : value['name'],'artist' : value['artist'],'literaryProperty' : value['literaryProperty'],'hash' : value['hash'],
         'thumbnail' : value['thumbnail'],'music' : value['music'],'category' : value['category'],'sub' : value['sub'],'tag' : value['tag']})
     return render_template('list.html',song = {'result' : output})    
 
@@ -241,6 +241,7 @@ def upload_song_post():
         category = request.form['category'] #항목 String
         sub = request.form['sub'] #서브항목 List
         tag = request.form['tag'] #태그 List
+        _hash = request.form['hash'] #해쉬태그 String
 
         thumbnail.save('./uploads/thumbnails/' + secure_filename(thumbnail.filename))
         music.save('./uploads/songs/' + secure_filename(music.filename))
@@ -270,7 +271,7 @@ def upload_song_post():
                 musicis = False
 
 
-        song = [{'name' : name , 'artist' : artist , 'literaryProperty' : literaryProperty ,
+        song = [{'name' : name , 'artist' : artist , 'literaryProperty' : literaryProperty ,"hash" : _hash,
          'thumbnail' : secure_filename(thumbnail.filename) , 'music' : secure_filename(music.filename) , 'category' : category , 'sub' : subList, 'tag' : tagList}]
 
 

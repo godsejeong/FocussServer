@@ -6,7 +6,8 @@
         <table id="table" border="1">
             <th>노래제목</th>
 	        <th>아티스트</th>
-	        <th>출처</th>
+            <th>출처</th>
+	        <th>해쉬태그</th>
 	        <th>썸네일</th>
 	        <th>음악</th>
 	        <th>항목</th>
@@ -87,6 +88,7 @@
                 var nametd = $('<td>',{class: 'td',text: list.result[x].name});
                 var artisttd = $('<td>',{class: 'td',text: list.result[x].artist});
                 var literaryPropertytd = $('<td>',{class: 'td',text: list.result[x].literaryProperty});
+                var hash = $('<td>',{class: 'td',text: list.result[x].hash});
                 var thumbnail = $('<td>',{class: 'td'});
                 var music = $('<td>',{class: 'td'});
                 var category = $('<td>',{class: 'td',text: list.result[x].category});
@@ -105,6 +107,7 @@
                 newtr.append(nametd)
                 newtr.append(artisttd)
                 newtr.append(literaryPropertytd)
+                newtr.append(hash)
                 newtr.append(thumbnail)
                 newtr.append(music)
                 newtr.append(category)

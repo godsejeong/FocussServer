@@ -20,6 +20,11 @@
                 <label>출처
                     <input type="text" name="literaryProperty" placeholder="출처링크나 저작권소유자를 입력해주세요.">
                 </label>
+
+                <label>해쉬태그
+                    <input type="text" name="hash" placeholder="해쉬태그를 입력해주세요">
+                </label>
+
                 <label>썸네일
                     <div class="box-file-input">
                         <label>
@@ -437,6 +442,7 @@
         var _name = document.getElementsByName('name')[0].value
         var _artist = document.getElementsByName('artist')[0].value
         var _literaryProperty = document.getElementsByName('literaryProperty')[0].value
+        var _hash = document.getElementsByName('hash')[0].value
         var _thumbnail = $("#thumbnail")[0].files[0]
         var _music = $("#music")[0].files[0]
         var _category = document.getElementsByName('category')[0].value
@@ -446,6 +452,7 @@
         console.log("name : " + _name)
         console.log("artist : " + _artist)
         console.log("literaryProperty : " + _literaryProperty)
+        console.log("hash : " + _hash)
         console.log("thumbnail : " + _thumbnail)
         console.log("music : " + _music)
         console.log("category : " + _category)
@@ -469,6 +476,8 @@
             formData.append("artist", _artist);
             formData.append("literaryProperty", _literaryProperty);
             formData.append("thumbnail", _thumbnail);
+            formData.append("music", _music);
+            formData.append("hash", _hash);
             formData.append("music", _music);
             formData.append("category", _category);
             formData.append("sub", _sub);
