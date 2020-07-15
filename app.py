@@ -36,10 +36,7 @@ mongo = PyMongo(app)
 
 @app.route("/")
 def hello():
-    output = []
-    for value in category_col.find():
-        output.append({'name' : value['name']})
-    return render_template('index.html',category_data = output)
+    return render_template('index.html',fix_col = {"result" : ""})
 
 @app.route("/list")
 def list_post():
@@ -56,8 +53,18 @@ def popup_sub():
         output.append({'name' : value['name']})
     return render_template('popup.html',popup_data = {'result' : output})
 
+@app.route("/fix/<path:name>",methods=['GET', 'POST'])
+def fix_post(name):
+    output = []
+    name_col = {'name' : name}
+    find_col = song_col.find(name_col)
 
+    for value in find_col:
+        output.append({'name' : value['name'],'artist' : value['artist'],'literaryProperty' : value['literaryProperty'],'hash' : value['hash'],
+        'original_music' : value['original_music'],'original_thumbnails' : value['original_thumbnail'],
+        'category' : value['category'],'sub' : value['sub'],'tag' : value['tag']})
 
+    return render_template('index.html',fix_col = {"result" : output})
 
 @app.route("/tag")
 def popup_tag():
@@ -76,7 +83,6 @@ def popup_category_col():
 @app.route("/tagadd")
 def add_tag_page():
     return render_template('add.html',add = "tag")
-
 
 @app.route("/subadd")
 def add_sub_page():
@@ -97,7 +103,6 @@ def tag_post():
                 colis = False
             else:
                 colis = True
-            
 
         if(colis):
             print(tag_value)
@@ -230,6 +235,57 @@ def remove_song_post():
     except Exception as e:
         return {'StatusCode': '400', 'Message': str(e)}
 
+@app.route("/fixSong",methods = ['POST'])
+def fix_song_post():
+    # try:
+
+        original_name = request.form['original_name']  #이름 String
+
+        print(original_name)
+
+        name = request.form['name']  #이름 String
+        artist = request.form['artist']  #아티스트 String
+        literaryProperty = request.form['literaryProperty']   #저작권 String
+        category = request.form['category'] #항목 String
+        sub = request.form['sub'] #서브항목 List
+        tag = request.form['tag'] #태그 List
+        _hash = request.form['hash'] #해쉬태그 String
+
+        tagList = tag.strip().split(' ')
+        subList = sub.strip().split(' ')
+
+        name_col = {'name' : original_name}
+        find_col = song_col.find(name_col)
+        thumbnail = ""
+        music = ""
+        for i in find_col:
+            thumbnail =i['thumbnail']
+            music = i['music']
+
+        newvalues = { "$set": {'name' : name , 'artist' : artist , 'literaryProperty' : literaryProperty ,"hash" : _hash,
+         'category' : category,'sub' : subList, 'tag' : tagList} }
+
+        nameis = False
+
+        for value in song_col.find():
+            if(name == value['name']):
+                nameis = True
+            else:
+                nameis = False
+
+        if(name == original_name):
+            nameis = False
+
+        if(nameis):
+            return {'StatusCode': '403', 'Message': '이름이 이미 존재합니다.'}
+        else:
+            song_col.update_one(name_col,newvalues)
+            return {'StatusCode': '200', 'Message': '정상적으로 처리되었습니다.'}
+
+    # except Exception as e:
+    #     return {'StatusCode': '400', 'Message': str(e)}
+
+
 @app.route("/uploadSong",methods = ['POST'])
 def upload_song_post():
     try:
@@ -272,7 +328,8 @@ def upload_song_post():
 
 
         song = [{'name' : name , 'artist' : artist , 'literaryProperty' : literaryProperty ,"hash" : _hash,
-         'thumbnail' : secure_filename(thumbnail.filename) , 'music' : secure_filename(music.filename) , 'category' : category , 'sub' : subList, 'tag' : tagList}]
+         'thumbnail' : secure_filename(thumbnail.filename) , 'music' : secure_filename(music.filename),
+         'category' : category , 'sub' : subList, 'tag' : tagList}]
 
 
         if(nameis):
@@ -288,16 +345,27 @@ def upload_song_post():
     except Exception as e:
         return {'StatusCode': '400', 'Message': str(e)}
 
-class UploadSong(Resource):
+class getCategory(Resource):
     def post(self):
-        return {'status': 'success'}
+        try:
+            output = []
+            for value in category_col.find():
+                output.append({'name' : value['name']})
+            return {'StatusCode': '200', 'Result': output}
+        except Exception as e:
+            return {'StatusCode': '400', 'Message': str(e)}
 
-class GetAllList(Resource):
-    def post(self):
-        return {'status' : 'success'}        
+# class UploadSong(Resource):
+#     def post(self):
+#         return {'status': 'success'}
 
-api.add_resource(UploadSong, '/upload')
-api.add_resource(GetAllList, '/all')
+# class GetAllList(Resource):
+#     def post(self):
+#         return {'status' : 'success'}        
+
+# api.add_resource(UploadSong, '/upload')
+# api.add_resource(GetAllList, '/all')
+api.add_resource(getCategory, '/getCategory')
 # api.add_resource(GetAllList, '/addTag')
 
 if __name__ == "__main__":

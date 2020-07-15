@@ -62,10 +62,11 @@
             </form>
         </div>
 
-            <input type="submit" value="올리기" onclick="uploadSong()">
+            <input type="submit" id="btn" value="올리기" onclick="uploadSong()">
 
 
     <div class="btn-div">
+        <button id="add-list" class= "add-tag" onclick="location.href='/list'">음악 리스트 보기</button>
         <button id="add-tag" class= "add-tag" onclick="location.href='/tagadd'">태그추가</button>
         <button id="add-sub" class = "add-sub" onclick="location.href='/subadd'">서브항목추가</button>
         <button id="add-category" onclick="location.href='/categoryadd'">항목추가</button>
@@ -300,15 +301,64 @@
 
     <script type="text/javascript">
 
-    var categoryObj = JSON.parse('{{ category_data | tojson | safe}}');
+    $.ajax({
+        type : 'POST',
+        url : '/getCategory',
+        dataType : 'JSON',
+        success : function(result){
+            
+            for (var x in result.Result){
+                console.log(result.Result)
+                value = result.Result[x].name
+                var newoption = $('<option>',{text: value});
+                $('#category-btn').append( newoption);
+            }
+        }
+    });   
 
-    for (var x in categoryObj){
-        console.log(categoryObj)
-        value = categoryObj[x].name
-        var newoption = $('<option>',{text: value});
-        $('#category-btn').append( newoption);
-    }       
+    fix_check = JSON.parse('{{ fix_col | tojson | safe }}');
 
+    if(fix_check.result != ""){
+
+        document.getElementById('btn').value = "수정하기"
+
+        music_name = ""
+        thumbnail_name = ""
+        original_name = ""
+
+        for (var x in fix_check.result){
+                name = fix_check.result[x].name
+                artist = fix_check.result[x].artist
+                literaryProperty = fix_check.result[x].literaryProperty
+                hash = fix_check.result[x].hash
+                category = fix_check.result[x].category
+                sub = fix_check.result[x].sub
+                tag = fix_check.result[x].tag
+
+                music_name = fix_check.result[x].original_music
+                thumbnail_name = fix_check.result[x].original_thumbnail
+
+                original_name = name
+
+                var sub_output = ""
+                var tag_output = ""
+
+                sub.forEach(item => sub_output+=item+" ")
+                tag.forEach(item => tag_output+=item+" ")
+
+                console.log(sub_output)
+                console.log(tag_output)
+
+                document.getElementsByName('name')[0].value = name
+                document.getElementsByName('artist')[0].value = artist
+                document.getElementsByName('literaryProperty')[0].value = literaryProperty
+                document.getElementsByName('hash')[0].value = hash
+                document.getElementsByName('category')[0].value = category
+                document.getElementsByName('sub')[0].value = sub_output
+                document.getElementsByName('tag')[0].value = tag_output
+
+            }
+    }
         
     $(document).on("change", ".thumbnail-input", function(){
      
@@ -373,9 +423,9 @@
     function OpenPop(id){
         console.log(id)
         if(id == 'category-sub-btn')
-            $("#pop-conts").load("sub").show();
+            $("#pop-conts").load("/sub").show();
         else if(id == 'tag-btn')
-            $("#pop-conts").load("tag").show();
+            $("#pop-conts").load("/tag").show();
         
         var $el = $("#layer2")
 
@@ -459,44 +509,71 @@
         console.log("sub : " + _sub)
         console.log("tag : " + _tag)
 
-        if(_name === "" ||
-           _artist === "" ||
-           _literaryProperty === "" ||
-           _thumbnail === "" ||
-           _music === "" ||
-           _category === "" ||
-           _sub === "" ||
-           _tag === ""){
-               alert("모든항목을 입력해주세요")
-        }else{
-            console.log("name : " + _name)
+        if(fix_check.result == ""){
+            if(_name === "" ||
+            _artist === "" ||
+            _literaryProperty === "" ||
+            typeof _thumbnail === "undefined" ||
+            typeof _music === "undefined" ||
+            _category === "" ||
+            _sub === "" ||
+            _tag === ""){
+                alert("모든항목을 입력해주세요")
+            }else{
+                console.log("name : " + _name)
 
+                var formData = new FormData();
+                formData.append("name", _name);
+                formData.append("artist", _artist);
+                formData.append("literaryProperty", _literaryProperty);
+                formData.append("thumbnail", _thumbnail);
+                formData.append("music", _music);
+                formData.append("hash", _hash);
+                formData.append("category", _category);
+                formData.append("sub", _sub);
+                formData.append("tag", _tag);
+
+                $.ajax({
+                        type : 'POST',
+                        enctype: 'multipart/form-data',
+                        contentType : false,
+                        processData : false,
+                        cache: false,
+                        url : '/uploadSong',
+                        data: formData,
+                        dataType : 'JSON',
+                        success : function(result){
+                            alert(result.StatusCode + " : "+ result.Message);
+                            console.log(result.Message)
+                        }
+                    });
+                }
+        }else{
             var formData = new FormData();
+            formData.append("original_name",original_name);
             formData.append("name", _name);
             formData.append("artist", _artist);
             formData.append("literaryProperty", _literaryProperty);
-            formData.append("thumbnail", _thumbnail);
-            formData.append("music", _music);
             formData.append("hash", _hash);
-            formData.append("music", _music);
             formData.append("category", _category);
             formData.append("sub", _sub);
             formData.append("tag", _tag);
 
             $.ajax({
-                    type : 'POST',
-                    enctype: 'multipart/form-data',
-                    contentType : false,
-                    processData : false,
-                    cache: false,
-                    url : '/uploadSong',
-                    data: formData,
-                    dataType : 'JSON',
-                    success : function(result){
-                        alert(result.StatusCode + " : "+ result.Message);
-                        console.log(result.Message)
-                    }
-                });
+                type : 'POST',
+                enctype: 'multipart/form-data',
+                contentType : false,
+                processData : false,
+                cache: false,
+                url : '/fixSong',
+                data: formData,
+                dataType : 'JSON',
+                success : function(result){
+                    alert(result.StatusCode + " : "+ result.Message);
+                    console.log(result.Message)
+                }
+            });
+            
         }
 
 

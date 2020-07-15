@@ -17,12 +17,17 @@
 
         <div class="main_div">
             <div class="form_div">
-            <label>삭제하기
-                <input type="text" name="name" placeholder="삭제할 노래제목을 입력해주세요">
-                <input type="submit" value="삭제하기" onclick="removeSong()">
-            </label>
+                <label>삭제하기
+                    <input type="text" name="removo_name" placeholder="삭제할 노래제목을 입력해주세요">
+                    <input type="submit" value="삭제하기" onclick="removeSong()">
+                </label>
+                
+                <label>수정하기
+                    <input type="text" name="fix_name" placeholder="수정할 노래제목을 입력해주세요">
+                    <input type="submit" value="수정하기" onclick="fixSong()">
+                </label>
+            </div>
         </div>
-    </div>
 
     </body>
     <style>
@@ -116,7 +121,7 @@
         }
 
         function removeSong(){
-            name = document.getElementsByName('name')[0].value
+            name = document.getElementsByName('removo_name')[0].value
             $.ajax({
                     type : 'POST',
                     url : '/removeSong',
@@ -129,6 +134,11 @@
                         console.log(result.Message)
                     }
                 });
+        }
+
+        function fixSong(){
+            name = document.getElementsByName('fix_name')[0].value
+            location.href="/fix/" + name;
         }
 
     </script>
