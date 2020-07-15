@@ -322,8 +322,6 @@
 
         document.getElementById('btn').value = "수정하기"
 
-        music_name = ""
-        thumbnail_name = ""
         original_name = ""
 
         for (var x in fix_check.result){
@@ -334,9 +332,6 @@
                 category = fix_check.result[x].category
                 sub = fix_check.result[x].sub
                 tag = fix_check.result[x].tag
-
-                music_name = fix_check.result[x].original_music
-                thumbnail_name = fix_check.result[x].original_thumbnail
 
                 original_name = name
 

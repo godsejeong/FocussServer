@@ -61,7 +61,6 @@ def fix_post(name):
 
     for value in find_col:
         output.append({'name' : value['name'],'artist' : value['artist'],'literaryProperty' : value['literaryProperty'],'hash' : value['hash'],
-        'original_music' : value['original_music'],'original_thumbnails' : value['original_thumbnail'],
         'category' : value['category'],'sub' : value['sub'],'tag' : value['tag']})
 
     return render_template('index.html',fix_col = {"result" : output})
