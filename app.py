@@ -7,6 +7,7 @@ from flask_pymongo import PyMongo
 from pymongo import MongoClient
 from bson.json_util import dumps
 from werkzeug.utils import secure_filename
+import os
 
 import json
 
@@ -213,6 +214,17 @@ def remove_song_post():
     try:
         name = request.form['name']
         delete_col = {'name' : name}
+
+        songlist = song_col.find(delete_col)
+
+        print(songlist)
+
+        for x in songlist:
+            music = x['music']
+            thumbnail = x['thumbnail']
+            os.remove("./uploads/thumbnails/"+thumbnail)
+            os.remove("./uploads/songs/"+music)
+            
         song_col.delete_one(delete_col)
         return {'StatusCode': '200', 'Message': '삭제되었습니다.'}
     except Exception as e:
@@ -230,8 +242,8 @@ def upload_song_post():
         sub = request.form['sub'] #서브항목 List
         tag = request.form['tag'] #태그 List
 
-        thumbnail.save('./uploads/thumbnails/' + (thumbnail.filename))
-        music.save('./uploads/songs/' + (music.filename))
+        thumbnail.save('./uploads/thumbnails/' + secure_filename(thumbnail.filename))
+        music.save('./uploads/songs/' + secure_filename(music.filename))
 
         tagList = tag.strip().split(' ')
         subList = sub.strip().split(' ')
@@ -259,7 +271,7 @@ def upload_song_post():
 
 
         song = [{'name' : name , 'artist' : artist , 'literaryProperty' : literaryProperty ,
-         'thumbnail' : thumbnail.filename , 'music' : music.filename , 'category' : category , 'sub' : subList, 'tag' : tagList}]
+         'thumbnail' : secure_filename(thumbnail.filename) , 'music' : secure_filename(music.filename) , 'category' : category , 'sub' : subList, 'tag' : tagList}]
 
 
         if(nameis):
