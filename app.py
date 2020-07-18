@@ -246,6 +246,8 @@ def fix_song_post():
         artist = request.form['artist']  #아티스트 String
         literaryProperty = request.form['literaryProperty']   #저작권 String
         category = request.form['category'] #항목 String
+        thumbnail = request.files.get('thumbnail')   #썸네일 Fils
+        music = request.files.get('music')   #음악 Fils
         sub = request.form['sub'] #서브항목 List
         tag = request.form['tag'] #태그 List
         _hash = request.form['hash'] #해쉬태그 String
@@ -255,16 +257,34 @@ def fix_song_post():
 
         name_col = {'name' : original_name}
         find_col = song_col.find(name_col)
-        thumbnail = ""
-        music = ""
-        for i in find_col:
-            thumbnail =i['thumbnail']
-            music = i['music']
 
-        newvalues = { "$set": {'name' : name , 'artist' : artist , 'literaryProperty' : literaryProperty ,"hash" : _hash,
-         'category' : category,'sub' : subList, 'tag' : tagList} }
+        newvalues = {}
+        
+        # print("a" + thumbnail)
+
+        # print("b" + music)
+
+        if(thumbnail and music):
+             print('thumbnail and music')
+             newvalues = { "$set": {'name' : name , 'artist' : artist , 'literaryProperty' : literaryProperty ,"hash" : _hash,
+             'thumbnail' : secure_filename(thumbnail.filename) , 'music' : secure_filename(music.filename), 'category' : category,
+             'sub' : subList, 'tag' : tagList} }
+        elif(thumbnail):
+             print('thumbnail')
+             newvalues = { "$set": {'name' : name , 'artist' : artist , 'literaryProperty' : literaryProperty ,"hash" : _hash,
+             'thumbnail' : secure_filename(thumbnail.filename) , 'category' : category,'sub' : subList, 'tag' : tagList} }
+        elif(music):
+             print('music')
+             newvalues = { "$set": {'name' : name , 'artist' : artist , 'literaryProperty' : literaryProperty ,"hash" : _hash,
+             'music' : secure_filename(music.filename), 'category' : category,'sub' : subList, 'tag' : tagList} }
+        else:
+             print('not print')
+             newvalues = { "$set": {'name' : name , 'artist' : artist , 'literaryProperty' : literaryProperty ,"hash" : _hash,
+            'category' : category,'sub' : subList, 'tag' : tagList} }
 
         nameis = False
+        musicis = False
+        thumbnailis = False
 
         for value in song_col.find():
             if(name == value['name']):
@@ -272,11 +292,35 @@ def fix_song_post():
             else:
                 nameis = False
 
+        for value in song_col.find():
+            try: 
+                if(secure_filename(music.filename) == value['music']):
+                    nameis = True
+                else:
+                    nameis = False
+            except:
+                nameis = False
+                print("not Music")
+
+        for value in song_col.find():
+            try:
+                if(secure_filename(thumbnail.filename) == value['thumbnail']):
+                    thumbnailis = True
+                else:
+                    thumbnailis = False
+            except:
+                thumbnailis = False
+                print('not Thumbanilis')
+
         if(name == original_name):
             nameis = False
 
         if(nameis):
             return {'StatusCode': '403', 'Message': '이름이 이미 존재합니다.'}
+        elif(thumbnailis):
+            return {'StatusCode': '403', 'Message': '썸네일 파일명이 이미 존재합니다.'}
+        elif(musicis):
+            return {'StatusCode': '403', 'Message': '음악 파일명이 이미 존재합니다.'}
         else:
             song_col.update_one(name_col,newvalues)
             return {'StatusCode': '200', 'Message': '정상적으로 처리되었습니다.'}

@@ -554,6 +554,14 @@
             formData.append("sub", _sub);
             formData.append("tag", _tag);
 
+            if(
+                typeof _thumbnail != "undefined" ||
+                typeof _music != "undefined" 
+            ){
+                formData.append("music", _music);
+                formData.append("thumbnail", _thumbnail);
+            }
+
             $.ajax({
                 type : 'POST',
                 enctype: 'multipart/form-data',
@@ -567,13 +575,8 @@
                     alert(result.StatusCode + " : "+ result.Message);
                     console.log(result.Message)
                 }
-            });
-            
+            });   
         }
-
-
-
-
     }
     </script>
 </html>
