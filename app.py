@@ -420,7 +420,7 @@ class getMusic(Resource):
 # api.add_resource(UploadSong, '/upload')
 # api.add_resource(GetAllList, '/all')
 api.add_resource(getCategory, '/getCategory')
-api.add_resource(getCategory, '/getMusic')
+api.add_resource(getMusic, '/getMusic')
 # api.add_resource(GetAllList, '/addTag')
 
 if __name__ == "__main__":
