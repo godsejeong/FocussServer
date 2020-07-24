@@ -398,6 +398,17 @@ class getCategory(Resource):
         except Exception as e:
             return {'StatusCode': '400', 'Message': str(e)}
 
+class getMusic(Resource):
+    def post(self):
+        try:
+            output = []
+            for value in song_col.find():
+                 output.append({'name' : value['name'],'artist' : value['artist'],'literaryProperty' : value['literaryProperty'],'hash' : value['hash'],
+        'thumbnail' : value['thumbnail'],'music' : value['music'],'category' : value['category'],'sub' : value['sub'],'tag' : value['tag']})
+            return {'StatusCode': '200', 'Result': output}
+        except Exception as e:
+            return {'StatusCode': '400', 'Message': str(e)}            
+
 # class UploadSong(Resource):
 #     def post(self):
 #         return {'status': 'success'}
@@ -409,6 +420,7 @@ class getCategory(Resource):
 # api.add_resource(UploadSong, '/upload')
 # api.add_resource(GetAllList, '/all')
 api.add_resource(getCategory, '/getCategory')
+api.add_resource(getCategory, '/getMusic')
 # api.add_resource(GetAllList, '/addTag')
 
 if __name__ == "__main__":
